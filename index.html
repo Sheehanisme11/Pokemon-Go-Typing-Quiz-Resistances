@@ -1,0 +1,193 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Pokémon GO Typing Quiz 4 — Resistance To</title>
+<style>
+:root{
+  --bg1:#eef7ff; --bg2:#f3fff7; --card:#ffffff; --ink:#172033; --muted:#5c6675;
+  --accent:#2563eb; --accent2:#22c55e; --bad:#ef4444; --soft:#eff6ff; --line:#d7e3f4;
+}
+*{box-sizing:border-box}
+body{margin:0;font-family:Inter,Segoe UI,Roboto,Arial,sans-serif;background:linear-gradient(135deg,var(--bg1),var(--bg2));color:var(--ink);}
+header{padding:32px 20px 20px;text-align:center}
+header h1{margin:0;font-size:clamp(28px,4vw,46px);letter-spacing:-.04em}
+header p{max-width:900px;margin:12px auto 0;color:var(--muted);font-size:17px;line-height:1.5}
+.wrap{max-width:1040px;margin:0 auto;padding:16px 20px 46px}
+.panel{background:rgba(255,255,255,.82);backdrop-filter:blur(10px);border:1px solid var(--line);box-shadow:0 14px 40px rgba(30,64,175,.10);border-radius:28px;padding:22px;margin-bottom:18px}
+.meta{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-top:18px}
+.pill{background:var(--soft);border:1px solid #bfdbfe;color:#1d4ed8;padding:8px 12px;border-radius:999px;font-weight:800;font-size:13px}
+.progress{height:12px;background:#eceff4;border-radius:999px;overflow:hidden;margin:12px 0 0}
+.progress span{display:block;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));width:0%;transition:.25s}
+.card{background:var(--card);border:1px solid var(--line);border-radius:28px;box-shadow:0 18px 50px rgba(30,64,175,.12);padding:26px;margin-top:18px}
+.qtop{display:flex;justify-content:space-between;gap:16px;align-items:flex-start}
+.qnum{font-weight:900;color:var(--accent);font-size:14px;letter-spacing:.08em;text-transform:uppercase}
+.score{font-weight:850;color:var(--muted)}
+.question{font-size:26px;line-height:1.25;margin:8px 0 12px;font-weight:900;letter-spacing:-.03em}
+.hint{color:var(--muted);font-weight:650;margin:0 0 20px}
+.options{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px}
+.option{border:2px solid var(--line);background:#fff;border-radius:18px;padding:14px 14px;display:flex;gap:10px;align-items:center;cursor:pointer;transition:.15s;user-select:none;font-weight:800}
+.option:hover{transform:translateY(-1px);border-color:#93c5fd;box-shadow:0 8px 22px rgba(30,64,175,.08)}
+.option input{width:18px;height:18px;accent-color:var(--accent)}
+.option.selected{border-color:var(--accent);background:#eff6ff}
+.option.correct{border-color:var(--accent2);background:#ecfdf3}
+.option.wrong{border-color:var(--bad);background:#fff1f2}
+.option.missed{border-color:var(--accent2);background:#f0fdf4;box-shadow:inset 0 0 0 2px rgba(34,197,94,.10)}
+.actions{display:flex;gap:12px;flex-wrap:wrap;margin-top:22px}
+button{border:0;border-radius:16px;padding:13px 18px;font-weight:900;cursor:pointer;font-size:15px}
+.primary{background:linear-gradient(90deg,var(--accent),#1d4ed8);color:#fff}
+.secondary{background:#e8eef6;color:#243244}
+button:disabled{opacity:.48;cursor:not-allowed}
+.feedback{margin-top:20px;border-radius:20px;padding:16px 18px;display:none}
+.feedback.show{display:block}
+.feedback.good{background:#ecfdf3;border:1px solid #bbf7d0}
+.feedback.review{background:#eff6ff;border:1px solid #bfdbfe}
+.feedback h3{margin:0 0 8px;font-size:19px}
+.feedback p{margin:6px 0;color:#374151;line-height:1.45}
+.answerList{margin-top:12px;display:grid;gap:8px}
+.answerItem{background:rgba(255,255,255,.74);border:1px solid rgba(148,163,184,.35);border-radius:14px;padding:10px 12px;font-weight:800}
+.details{margin-top:14px;border-top:1px solid #bfdbfe;padding-top:12px}
+.details summary{cursor:pointer;font-weight:900;color:#1d4ed8}
+.allAnswers{margin-top:10px;display:flex;gap:8px;flex-wrap:wrap}
+.tag{border:1px solid #e5e7eb;background:#fff;border-radius:999px;padding:6px 9px;font-size:13px;font-weight:750;color:#374151}
+.small{font-size:13px;color:var(--muted);font-weight:650}
+.end{text-align:center;display:none}
+.end.show{display:block}
+.end h2{font-size:34px;margin:4px 0 8px}
+.footer{margin-top:24px;text-align:center;color:var(--muted);font-size:13px}
+@media(max-width:620px){.card{padding:20px}.question{font-size:22px}.qtop{flex-direction:column}.options{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+  <h1>Pokémon GO Typing Quiz 4</h1>
+  <p><strong>Resistance To — Defensive Recognition.</strong><br>
+  Select every mono or dual typing in the options that resists the incoming attack type. This quiz was generated from the uploaded Master PvP Typing Spreadsheet logic.</p>
+  <div class="meta">
+    <span class="pill">Mono + dual typings</span>
+    <span class="pill">Select ALL correct answers</span>
+    <span class="pill">Resistance means incoming damage &lt; ×1.0</span>
+  </div>
+</header>
+<main class="wrap">
+  <section class="panel">
+    <div class="qtop">
+      <div><div class="qnum" id="progressText">Question 1 of 18</div><div class="progress"><span id="bar"></span></div></div>
+      <div class="score" id="scoreText">Score: 0 / 0</div>
+    </div>
+  </section>
+  <section class="card" id="quizCard">
+    <div class="qnum" id="categoryText">Resistance To</div>
+    <div class="question" id="questionText"></div>
+    <p class="hint">Choose every correct option shown. There may be more than one correct answer.</p>
+    <div class="options" id="options"></div>
+    <div class="actions">
+      <button class="primary" id="checkBtn">Check answer</button>
+      <button class="secondary" id="nextBtn" disabled>Next question</button>
+      <button class="secondary" id="restartBtn">Restart</button>
+    </div>
+    <div class="feedback" id="feedback"></div>
+  </section>
+  <section class="card end" id="endCard">
+    <h2>Quiz Complete!</h2>
+    <p id="finalScore"></p>
+    <p class="small">This is a learning quiz — review any missed answers and replay to build memory.</p>
+    <button class="primary" onclick="restartQuiz()">Restart Quiz</button>
+  </section>
+  <div class="footer">Pokémon GO Typing Quiz 4 — Resistance To. Generated from the Master PvP Typing Spreadsheet.</div>
+</main>
+<script>
+const QUESTIONS = [{"attackType": "Normal", "prompt": "Select all typings that resist Normal attacks.", "options": ["Electric/Flying", "Fire/Ground", "Normal/Electric", "Bug/Ghost", "Water/Ghost", "Water/Psychic", "Fire/Fairy", "Ground/Steel", "Bug/Rock", "Ghost/Dark"], "correctOptions": ["Bug/Ghost", "Water/Ghost", "Ground/Steel", "Bug/Rock", "Ghost/Dark"], "allCorrect": ["Normal/Rock", "Normal/Ghost", "Normal/Steel", "Fire/Rock", "Fire/Ghost", "Fire/Steel", "Water/Rock", "Water/Ghost", "Water/Steel", "Electric/Rock", "Electric/Ghost", "Electric/Steel", "Grass/Rock", "Grass/Ghost", "Grass/Steel", "Ice/Rock", "Ice/Ghost", "Ice/Steel", "Fighting/Rock", "Fighting/Ghost", "Fighting/Steel", "Poison/Rock", "Poison/Ghost", "Poison/Steel", "Ground/Rock", "Ground/Ghost", "Ground/Steel", "Flying/Rock", "Flying/Ghost", "Flying/Steel", "Psychic/Rock", "Psychic/Ghost", "Psychic/Steel", "Bug/Rock", "Bug/Ghost", "Bug/Steel", "Rock", "Rock/Ghost", "Rock/Dragon", "Rock/Dark", "Rock/Steel", "Rock/Fairy", "Ghost", "Ghost/Dragon", "Ghost/Dark", "Ghost/Steel", "Ghost/Fairy", "Dragon/Steel", "Dark/Steel", "Steel", "Steel/Fairy"], "allCorrectCount": 51}, {"attackType": "Fire", "prompt": "Select all typings that resist Fire attacks.", "options": ["Rock/Dark", "Grass/Rock", "Normal/Bug", "Grass/Psychic", "Grass/Dragon", "Flying/Rock", "Bug/Steel", "Water/Ghost", "Dragon/Fairy", "Rock/Ghost"], "correctOptions": ["Rock/Dark", "Flying/Rock", "Water/Ghost", "Dragon/Fairy", "Rock/Ghost"], "allCorrect": ["Normal/Fire", "Normal/Water", "Normal/Rock", "Normal/Dragon", "Fire", "Fire/Water", "Fire/Electric", "Fire/Fighting", "Fire/Poison", "Fire/Ground", "Fire/Flying", "Fire/Psychic", "Fire/Rock", "Fire/Ghost", "Fire/Dragon", "Fire/Dark", "Fire/Fairy", "Water", "Water/Electric", "Water/Fighting", "Water/Poison", "Water/Ground", "Water/Flying", "Water/Psychic", "Water/Rock", "Water/Ghost", "Water/Dragon", "Water/Dark", "Water/Fairy", "Electric/Rock", "Electric/Dragon", "Fighting/Rock", "Fighting/Dragon", "Poison/Rock", "Poison/Dragon", "Ground/Rock", "Ground/Dragon", "Flying/Rock", "Flying/Dragon", "Psychic/Rock", "Psychic/Dragon", "Rock", "Rock/Ghost", "Rock/Dragon", "Rock/Dark", "Rock/Fairy", "Ghost/Dragon", "Dragon", "Dragon/Dark", "Dragon/Fairy"], "allCorrectCount": 50}, {"attackType": "Water", "prompt": "Select all typings that resist Water attacks.", "options": ["Grass/Rock", "Fire/Psychic", "Ghost/Steel", "Ghost/Fairy", "Water/Ice", "Dragon/Steel", "Flying/Steel", "Grass/Poison", "Electric/Dragon", "Normal/Dragon"], "correctOptions": ["Water/Ice", "Dragon/Steel", "Grass/Poison", "Electric/Dragon", "Normal/Dragon"], "allCorrect": ["Normal/Water", "Normal/Grass", "Normal/Dragon", "Water", "Water/Electric", "Water/Grass", "Water/Ice", "Water/Fighting", "Water/Poison", "Water/Flying", "Water/Psychic", "Water/Bug", "Water/Ghost", "Water/Dragon", "Water/Dark", "Water/Steel", "Water/Fairy", "Electric/Grass", "Electric/Dragon", "Grass", "Grass/Ice", "Grass/Fighting", "Grass/Poison", "Grass/Flying", "Grass/Psychic", "Grass/Bug", "Grass/Ghost", "Grass/Dragon", "Grass/Dark", "Grass/Steel", "Grass/Fairy", "Ice/Dragon", "Fighting/Dragon", "Poison/Dragon", "Flying/Dragon", "Psychic/Dragon", "Bug/Dragon", "Ghost/Dragon", "Dragon", "Dragon/Dark", "Dragon/Steel", "Dragon/Fairy"], "allCorrectCount": 42}, {"attackType": "Electric", "prompt": "Select all typings that resist Electric attacks.", "options": ["Ghost/Steel", "Ground/Bug", "Rock/Dragon", "Ice/Flying", "Psychic", "Ground/Psychic", "Normal/Ground", "Ground/Ghost", "Dark/Steel", "Electric/Flying"], "correctOptions": ["Ground/Bug", "Rock/Dragon", "Ground/Psychic", "Normal/Ground", "Ground/Ghost"], "allCorrect": ["Normal/Electric", "Normal/Grass", "Normal/Ground", "Normal/Dragon", "Fire/Electric", "Fire/Grass", "Fire/Ground", "Fire/Dragon", "Water/Ground", "Electric", "Electric/Grass", "Electric/Ice", "Electric/Fighting", "Electric/Poison", "Electric/Ground", "Electric/Psychic", "Electric/Bug", "Electric/Rock", "Electric/Ghost", "Electric/Dragon", "Electric/Dark", "Electric/Steel", "Electric/Fairy", "Grass", "Grass/Ice", "Grass/Fighting", "Grass/Poison", "Grass/Ground", "Grass/Psychic", "Grass/Bug", "Grass/Rock", "Grass/Ghost", "Grass/Dragon", "Grass/Dark", "Grass/Steel", "Grass/Fairy", "Ice/Ground", "Ice/Dragon", "Fighting/Ground", "Fighting/Dragon", "Poison/Ground", "Poison/Dragon", "Ground", "Ground/Flying", "Ground/Psychic", "Ground/Bug", "Ground/Rock", "Ground/Ghost", "Ground/Dragon", "Ground/Dark", "Ground/Steel", "Ground/Fairy", "Psychic/Dragon", "Bug/Dragon", "Rock/Dragon", "Ghost/Dragon", "Dragon", "Dragon/Dark", "Dragon/Steel", "Dragon/Fairy"], "allCorrectCount": 60}, {"attackType": "Grass", "prompt": "Select all typings that resist Grass attacks.", "options": ["Fire/Fairy", "Bug/Fairy", "Psychic", "Psychic/Ghost", "Electric/Ghost", "Normal/Grass", "Grass/Dragon", "Ghost/Dark", "Grass/Ice", "Rock/Dragon"], "correctOptions": ["Fire/Fairy", "Bug/Fairy", "Normal/Grass", "Grass/Dragon", "Grass/Ice"], "allCorrect": ["Normal/Fire", "Normal/Grass", "Normal/Poison", "Normal/Flying", "Normal/Bug", "Normal/Dragon", "Normal/Steel", "Fire", "Fire/Electric", "Fire/Grass", "Fire/Ice", "Fire/Fighting", "Fire/Poison", "Fire/Flying", "Fire/Psychic", "Fire/Bug", "Fire/Ghost", "Fire/Dragon", "Fire/Dark", "Fire/Steel", "Fire/Fairy", "Electric/Grass", "Electric/Poison", "Electric/Flying", "Electric/Bug", "Electric/Dragon", "Electric/Steel", "Grass", "Grass/Ice", "Grass/Fighting", "Grass/Poison", "Grass/Flying", "Grass/Psychic", "Grass/Bug", "Grass/Ghost", "Grass/Dragon", "Grass/Dark", "Grass/Steel", "Grass/Fairy", "Ice/Poison", "Ice/Flying", "Ice/Bug", "Ice/Dragon", "Ice/Steel", "Fighting/Poison", "Fighting/Flying", "Fighting/Bug", "Fighting/Dragon", "Fighting/Steel", "Poison", "Poison/Flying", "Poison/Psychic", "Poison/Bug", "Poison/Ghost", "Poison/Dragon", "Poison/Dark", "Poison/Steel", "Poison/Fairy", "Flying", "Flying/Psychic", "Flying/Bug", "Flying/Ghost", "Flying/Dragon", "Flying/Dark", "Flying/Steel", "Flying/Fairy", "Psychic/Bug", "Psychic/Dragon", "Psychic/Steel", "Bug", "Bug/Ghost", "Bug/Dragon", "Bug/Dark", "Bug/Steel", "Bug/Fairy", "Ghost/Dragon", "Ghost/Steel", "Dragon", "Dragon/Dark", "Dragon/Steel", "Dragon/Fairy", "Dark/Steel", "Steel", "Steel/Fairy"], "allCorrectCount": 84}, {"attackType": "Ice", "prompt": "Select all typings that resist Ice attacks.", "options": ["Fire/Ground", "Electric", "Water/Grass", "Psychic/Steel", "Fighting/Dragon", "Dark/Fairy", "Normal/Steel", "Steel", "Ice/Steel", "Water/Steel"], "correctOptions": ["Psychic/Steel", "Normal/Steel", "Steel", "Ice/Steel", "Water/Steel"], "allCorrect": ["Normal/Fire", "Normal/Water", "Normal/Ice", "Normal/Steel", "Fire", "Fire/Water", "Fire/Electric", "Fire/Ice", "Fire/Fighting", "Fire/Poison", "Fire/Psychic", "Fire/Bug", "Fire/Rock", "Fire/Ghost", "Fire/Dark", "Fire/Steel", "Fire/Fairy", "Water", "Water/Electric", "Water/Ice", "Water/Fighting", "Water/Poison", "Water/Psychic", "Water/Bug", "Water/Rock", "Water/Ghost", "Water/Dark", "Water/Steel", "Water/Fairy", "Electric/Ice", "Electric/Steel", "Ice", "Ice/Fighting", "Ice/Poison", "Ice/Psychic", "Ice/Bug", "Ice/Rock", "Ice/Ghost", "Ice/Dark", "Ice/Steel", "Ice/Fairy", "Fighting/Steel", "Poison/Steel", "Psychic/Steel", "Bug/Steel", "Rock/Steel", "Ghost/Steel", "Dark/Steel", "Steel", "Steel/Fairy"], "allCorrectCount": 50}, {"attackType": "Fighting", "prompt": "Select all typings that resist Fighting attacks.", "options": ["Normal/Ground", "Ghost", "Grass/Fairy", "Dragon/Dark", "Poison/Psychic", "Water/Poison", "Fairy", "Ice/Steel", "Water/Ground", "Dark/Fairy"], "correctOptions": ["Ghost", "Grass/Fairy", "Poison/Psychic", "Water/Poison", "Fairy"], "allCorrect": ["Normal/Ghost", "Fire/Poison", "Fire/Flying", "Fire/Psychic", "Fire/Bug", "Fire/Ghost", "Fire/Fairy", "Water/Poison", "Water/Flying", "Water/Psychic", "Water/Bug", "Water/Ghost", "Water/Fairy", "Electric/Poison", "Electric/Flying", "Electric/Psychic", "Electric/Bug", "Electric/Ghost", "Electric/Fairy", "Grass/Poison", "Grass/Flying", "Grass/Psychic", "Grass/Bug", "Grass/Ghost", "Grass/Fairy", "Ice/Ghost", "Fighting/Poison", "Fighting/Flying", "Fighting/Psychic", "Fighting/Bug", "Fighting/Ghost", "Fighting/Fairy", "Poison", "Poison/Ground", "Poison/Flying", "Poison/Psychic", "Poison/Bug", "Poison/Ghost", "Poison/Dragon", "Poison/Fairy", "Ground/Flying", "Ground/Psychic", "Ground/Bug", "Ground/Ghost", "Ground/Fairy", "Flying", "Flying/Psychic", "Flying/Bug", "Flying/Ghost", "Flying/Dragon", "Flying/Fairy", "Psychic", "Psychic/Bug", "Psychic/Ghost", "Psychic/Dragon", "Psychic/Fairy", "Bug", "Bug/Ghost", "Bug/Dragon", "Bug/Fairy", "Rock/Ghost", "Ghost", "Ghost/Dragon", "Ghost/Dark", "Ghost/Steel", "Ghost/Fairy", "Dragon/Fairy", "Fairy"], "allCorrectCount": 68}, {"attackType": "Poison", "prompt": "Select all typings that resist Poison attacks.", "options": ["Grass/Dragon", "Normal/Bug", "Fire/Steel", "Steel", "Poison/Steel", "Bug/Ghost", "Poison/Dragon", "Psychic/Dragon", "Water/Bug", "Fire/Grass"], "correctOptions": ["Fire/Steel", "Steel", "Poison/Steel", "Bug/Ghost", "Poison/Dragon"], "allCorrect": ["Normal/Poison", "Normal/Ground", "Normal/Rock", "Normal/Ghost", "Normal/Steel", "Fire/Poison", "Fire/Ground", "Fire/Rock", "Fire/Ghost", "Fire/Steel", "Water/Poison", "Water/Ground", "Water/Rock", "Water/Ghost", "Water/Steel", "Electric/Poison", "Electric/Ground", "Electric/Rock", "Electric/Ghost", "Electric/Steel", "Grass/Steel", "Ice/Poison", "Ice/Ground", "Ice/Rock", "Ice/Ghost", "Ice/Steel", "Fighting/Poison", "Fighting/Ground", "Fighting/Rock", "Fighting/Ghost", "Fighting/Steel", "Poison", "Poison/Ground", "Poison/Flying", "Poison/Psychic", "Poison/Bug", "Poison/Rock", "Poison/Ghost", "Poison/Dragon", "Poison/Dark", "Poison/Steel", "Ground", "Ground/Flying", "Ground/Psychic", "Ground/Bug", "Ground/Rock", "Ground/Ghost", "Ground/Dragon", "Ground/Dark", "Ground/Steel", "Flying/Rock", "Flying/Ghost", "Flying/Steel", "Psychic/Rock", "Psychic/Ghost", "Psychic/Steel", "Bug/Rock", "Bug/Ghost", "Bug/Steel", "Rock", "Rock/Ghost", "Rock/Dragon", "Rock/Dark", "Rock/Steel", "Ghost", "Ghost/Dragon", "Ghost/Dark", "Ghost/Steel", "Dragon/Steel", "Dark/Steel", "Steel", "Steel/Fairy"], "allCorrectCount": 72}, {"attackType": "Ground", "prompt": "Select all typings that resist Ground attacks.", "options": ["Psychic/Bug", "Fire/Grass", "Fairy", "Grass/Ghost", "Water/Poison", "Psychic/Steel", "Normal/Bug", "Grass/Bug", "Flying/Dragon", "Ice/Dark"], "correctOptions": ["Psychic/Bug", "Grass/Ghost", "Normal/Bug", "Grass/Bug", "Flying/Dragon"], "allCorrect": ["Normal/Grass", "Normal/Flying", "Normal/Bug", "Fire/Flying", "Water/Grass", "Water/Flying", "Water/Bug", "Electric/Flying", "Grass", "Grass/Ice", "Grass/Fighting", "Grass/Ground", "Grass/Flying", "Grass/Psychic", "Grass/Bug", "Grass/Ghost", "Grass/Dragon", "Grass/Dark", "Grass/Fairy", "Ice/Flying", "Ice/Bug", "Fighting/Flying", "Fighting/Bug", "Poison/Flying", "Ground/Flying", "Ground/Bug", "Flying", "Flying/Psychic", "Flying/Bug", "Flying/Rock", "Flying/Ghost", "Flying/Dragon", "Flying/Dark", "Flying/Steel", "Flying/Fairy", "Psychic/Bug", "Bug", "Bug/Ghost", "Bug/Dragon", "Bug/Dark", "Bug/Fairy"], "allCorrectCount": 41}, {"attackType": "Flying", "prompt": "Select all typings that resist Flying attacks.", "options": ["Fire/Steel", "Bug/Ghost", "Ground/Dark", "Electric", "Ground/Rock", "Grass/Dark", "Water/Dark", "Flying/Dragon", "Rock", "Normal/Electric"], "correctOptions": ["Fire/Steel", "Electric", "Ground/Rock", "Rock", "Normal/Electric"], "allCorrect": ["Normal/Electric", "Normal/Rock", "Normal/Steel", "Fire/Electric", "Fire/Rock", "Fire/Steel", "Water/Electric", "Water/Rock", "Water/Steel", "Electric", "Electric/Ice", "Electric/Poison", "Electric/Ground", "Electric/Flying", "Electric/Psychic", "Electric/Rock", "Electric/Ghost", "Electric/Dragon", "Electric/Dark", "Electric/Steel", "Electric/Fairy", "Ice/Rock", "Ice/Steel", "Poison/Rock", "Poison/Steel", "Ground/Rock", "Ground/Steel", "Flying/Rock", "Flying/Steel", "Psychic/Rock", "Psychic/Steel", "Rock", "Rock/Ghost", "Rock/Dragon", "Rock/Dark", "Rock/Steel", "Rock/Fairy", "Ghost/Steel", "Dragon/Steel", "Dark/Steel", "Steel", "Steel/Fairy"], "allCorrectCount": 42}, {"attackType": "Psychic", "prompt": "Select all typings that resist Psychic attacks.", "options": ["Normal/Dark", "Fire", "Ice/Ground", "Grass/Fairy", "Electric/Rock", "Bug/Dark", "Grass/Psychic", "Normal/Ghost", "Fire/Dark", "Electric/Dark"], "correctOptions": ["Normal/Dark", "Bug/Dark", "Grass/Psychic", "Fire/Dark", "Electric/Dark"], "allCorrect": ["Normal/Psychic", "Normal/Dark", "Normal/Steel", "Fire/Psychic", "Fire/Dark", "Fire/Steel", "Water/Psychic", "Water/Dark", "Water/Steel", "Electric/Psychic", "Electric/Dark", "Electric/Steel", "Grass/Psychic", "Grass/Dark", "Grass/Steel", "Ice/Psychic", "Ice/Dark", "Ice/Steel", "Fighting/Dark", "Poison/Dark", "Ground/Psychic", "Ground/Dark", "Ground/Steel", "Flying/Psychic", "Flying/Dark", "Flying/Steel", "Psychic", "Psychic/Bug", "Psychic/Rock", "Psychic/Ghost", "Psychic/Dragon", "Psychic/Dark", "Psychic/Steel", "Psychic/Fairy", "Bug/Dark", "Bug/Steel", "Rock/Dark", "Rock/Steel", "Ghost/Dark", "Ghost/Steel", "Dragon/Dark", "Dragon/Steel", "Dark", "Dark/Steel", "Dark/Fairy", "Steel", "Steel/Fairy"], "allCorrectCount": 47}, {"attackType": "Bug", "prompt": "Select all typings that resist Bug attacks.", "options": ["Fairy", "Normal/Ghost", "Electric/Ice", "Normal/Electric", "Normal/Poison", "Electric", "Water", "Water/Rock", "Ice/Ghost", "Dragon/Steel"], "correctOptions": ["Fairy", "Normal/Ghost", "Normal/Poison", "Ice/Ghost", "Dragon/Steel"], "allCorrect": ["Normal/Fire", "Normal/Fighting", "Normal/Poison", "Normal/Flying", "Normal/Ghost", "Normal/Steel", "Normal/Fairy", "Fire", "Fire/Water", "Fire/Electric", "Fire/Ice", "Fire/Fighting", "Fire/Poison", "Fire/Ground", "Fire/Flying", "Fire/Bug", "Fire/Rock", "Fire/Ghost", "Fire/Dragon", "Fire/Steel", "Fire/Fairy", "Water/Fighting", "Water/Poison", "Water/Flying", "Water/Ghost", "Water/Steel", "Water/Fairy", "Electric/Fighting", "Electric/Poison", "Electric/Flying", "Electric/Ghost", "Electric/Steel", "Electric/Fairy", "Ice/Fighting", "Ice/Poison", "Ice/Flying", "Ice/Ghost", "Ice/Steel", "Ice/Fairy", "Fighting", "Fighting/Poison", "Fighting/Ground", "Fighting/Flying", "Fighting/Bug", "Fighting/Rock", "Fighting/Ghost", "Fighting/Dragon", "Fighting/Steel", "Fighting/Fairy", "Poison", "Poison/Ground", "Poison/Flying", "Poison/Bug", "Poison/Rock", "Poison/Ghost", "Poison/Dragon", "Poison/Steel", "Poison/Fairy", "Ground/Flying", "Ground/Ghost", "Ground/Steel", "Ground/Fairy", "Flying", "Flying/Bug", "Flying/Rock", "Flying/Ghost", "Flying/Dragon", "Flying/Steel", "Flying/Fairy", "Bug/Ghost", "Bug/Steel", "Bug/Fairy", "Rock/Ghost", "Rock/Steel", "Rock/Fairy", "Ghost", "Ghost/Dragon", "Ghost/Steel", "Ghost/Fairy", "Dragon/Steel", "Dragon/Fairy", "Steel", "Steel/Fairy", "Fairy"], "allCorrectCount": 84}, {"attackType": "Rock", "prompt": "Select all typings that resist Rock attacks.", "options": ["Fighting/Psychic", "Steel", "Grass/Fairy", "Water/Fairy", "Ghost", "Psychic", "Grass/Fighting", "Water/Ghost", "Fighting/Dark", "Fighting/Ghost"], "correctOptions": ["Fighting/Psychic", "Steel", "Grass/Fighting", "Fighting/Dark", "Fighting/Ghost"], "allCorrect": ["Normal/Fighting", "Normal/Ground", "Normal/Steel", "Water/Fighting", "Water/Ground", "Water/Steel", "Electric/Fighting", "Electric/Ground", "Electric/Steel", "Grass/Fighting", "Grass/Ground", "Grass/Steel", "Fighting", "Fighting/Poison", "Fighting/Ground", "Fighting/Psychic", "Fighting/Rock", "Fighting/Ghost", "Fighting/Dragon", "Fighting/Dark", "Fighting/Steel", "Fighting/Fairy", "Poison/Ground", "Poison/Steel", "Ground", "Ground/Psychic", "Ground/Rock", "Ground/Ghost", "Ground/Dragon", "Ground/Dark", "Ground/Steel", "Ground/Fairy", "Psychic/Steel", "Rock/Steel", "Ghost/Steel", "Dragon/Steel", "Dark/Steel", "Steel", "Steel/Fairy"], "allCorrectCount": 39}, {"attackType": "Ghost", "prompt": "Select all typings that resist Ghost attacks.", "options": ["Grass/Ground", "Ice/Bug", "Grass/Fairy", "Normal/Poison", "Dragon/Dark", "Poison/Dark", "Rock", "Dark/Steel", "Fighting/Poison", "Dark"], "correctOptions": ["Normal/Poison", "Dragon/Dark", "Poison/Dark", "Dark/Steel", "Dark"], "allCorrect": ["Normal", "Normal/Fire", "Normal/Water", "Normal/Electric", "Normal/Grass", "Normal/Ice", "Normal/Fighting", "Normal/Poison", "Normal/Ground", "Normal/Flying", "Normal/Psychic", "Normal/Bug", "Normal/Rock", "Normal/Ghost", "Normal/Dragon", "Normal/Dark", "Normal/Steel", "Normal/Fairy", "Fire/Dark", "Water/Dark", "Electric/Dark", "Grass/Dark", "Ice/Dark", "Fighting/Dark", "Poison/Dark", "Ground/Dark", "Flying/Dark", "Bug/Dark", "Rock/Dark", "Dragon/Dark", "Dark", "Dark/Steel", "Dark/Fairy"], "allCorrectCount": 33}, {"attackType": "Dragon", "prompt": "Select all typings that resist Dragon attacks.", "options": ["Electric/Steel", "Normal/Steel", "Ghost/Fairy", "Normal/Grass", "Fighting/Ground", "Poison/Steel", "Ground/Fairy", "Electric/Bug", "Water/Dark", "Ice/Rock"], "correctOptions": ["Electric/Steel", "Normal/Steel", "Ghost/Fairy", "Poison/Steel", "Ground/Fairy"], "allCorrect": ["Normal/Steel", "Normal/Fairy", "Fire/Steel", "Fire/Fairy", "Water/Steel", "Water/Fairy", "Electric/Steel", "Electric/Fairy", "Grass/Steel", "Grass/Fairy", "Ice/Steel", "Ice/Fairy", "Fighting/Steel", "Fighting/Fairy", "Poison/Steel", "Poison/Fairy", "Ground/Steel", "Ground/Fairy", "Flying/Steel", "Flying/Fairy", "Psychic/Steel", "Psychic/Fairy", "Bug/Steel", "Bug/Fairy", "Rock/Steel", "Rock/Fairy", "Ghost/Steel", "Ghost/Fairy", "Dragon/Fairy", "Dark/Steel", "Dark/Fairy", "Steel", "Steel/Fairy", "Fairy"], "allCorrectCount": 34}, {"attackType": "Dark", "prompt": "Select all typings that resist Dark attacks.", "options": ["Dark/Fairy", "Ghost/Dark", "Normal/Fire", "Normal/Ground", "Fire/Ground", "Fighting/Flying", "Rock/Dark", "Grass/Fairy", "Dark/Steel", "Electric/Ice"], "correctOptions": ["Dark/Fairy", "Fighting/Flying", "Rock/Dark", "Grass/Fairy", "Dark/Steel"], "allCorrect": ["Normal/Fighting", "Normal/Dark", "Normal/Fairy", "Fire/Fighting", "Fire/Dark", "Fire/Fairy", "Water/Fighting", "Water/Dark", "Water/Fairy", "Electric/Fighting", "Electric/Dark", "Electric/Fairy", "Grass/Fighting", "Grass/Dark", "Grass/Fairy", "Ice/Fighting", "Ice/Dark", "Ice/Fairy", "Fighting", "Fighting/Poison", "Fighting/Ground", "Fighting/Flying", "Fighting/Bug", "Fighting/Rock", "Fighting/Dragon", "Fighting/Dark", "Fighting/Steel", "Fighting/Fairy", "Poison/Dark", "Poison/Fairy", "Ground/Dark", "Ground/Fairy", "Flying/Dark", "Flying/Fairy", "Bug/Dark", "Bug/Fairy", "Rock/Dark", "Rock/Fairy", "Dragon/Dark", "Dragon/Fairy", "Dark", "Dark/Steel", "Dark/Fairy", "Steel/Fairy", "Fairy"], "allCorrectCount": 45}, {"attackType": "Steel", "prompt": "Select all typings that resist Steel attacks.", "options": ["Ground", "Fire/Ghost", "Rock/Dragon", "Normal/Water", "Electric/Fighting", "Water/Poison", "Normal/Steel", "Normal/Flying", "Normal/Rock", "Normal/Ice"], "correctOptions": ["Fire/Ghost", "Normal/Water", "Electric/Fighting", "Water/Poison", "Normal/Steel"], "allCorrect": ["Normal/Fire", "Normal/Water", "Normal/Electric", "Normal/Steel", "Fire", "Fire/Water", "Fire/Electric", "Fire/Grass", "Fire/Fighting", "Fire/Poison", "Fire/Ground", "Fire/Flying", "Fire/Psychic", "Fire/Bug", "Fire/Ghost", "Fire/Dragon", "Fire/Dark", "Fire/Steel", "Water", "Water/Electric", "Water/Grass", "Water/Fighting", "Water/Poison", "Water/Ground", "Water/Flying", "Water/Psychic", "Water/Bug", "Water/Ghost", "Water/Dragon", "Water/Dark", "Water/Steel", "Electric", "Electric/Grass", "Electric/Fighting", "Electric/Poison", "Electric/Ground", "Electric/Flying", "Electric/Psychic", "Electric/Bug", "Electric/Ghost", "Electric/Dragon", "Electric/Dark", "Electric/Steel", "Grass/Steel", "Fighting/Steel", "Poison/Steel", "Ground/Steel", "Flying/Steel", "Psychic/Steel", "Bug/Steel", "Ghost/Steel", "Dragon/Steel", "Dark/Steel", "Steel"], "allCorrectCount": 54}, {"attackType": "Fairy", "prompt": "Select all typings that resist Fairy attacks.", "options": ["Normal/Steel", "Water/Ground", "Normal/Fire", "Normal/Dark", "Bug/Fairy", "Flying/Steel", "Normal/Poison", "Poison", "Grass/Fairy", "Water/Ghost"], "correctOptions": ["Normal/Steel", "Normal/Fire", "Flying/Steel", "Normal/Poison", "Poison"], "allCorrect": ["Normal/Fire", "Normal/Poison", "Normal/Steel", "Fire", "Fire/Water", "Fire/Electric", "Fire/Grass", "Fire/Ice", "Fire/Poison", "Fire/Ground", "Fire/Flying", "Fire/Psychic", "Fire/Bug", "Fire/Rock", "Fire/Ghost", "Fire/Steel", "Fire/Fairy", "Water/Poison", "Water/Steel", "Electric/Poison", "Electric/Steel", "Grass/Poison", "Grass/Steel", "Ice/Poison", "Ice/Steel", "Poison", "Poison/Ground", "Poison/Flying", "Poison/Psychic", "Poison/Bug", "Poison/Rock", "Poison/Ghost", "Poison/Steel", "Poison/Fairy", "Ground/Steel", "Flying/Steel", "Psychic/Steel", "Bug/Steel", "Rock/Steel", "Ghost/Steel", "Steel", "Steel/Fairy"], "allCorrectCount": 42}];
+let index = 0;
+let score = 0;
+let answered = 0;
+const progressText = document.getElementById('progressText');
+const scoreText = document.getElementById('scoreText');
+const bar = document.getElementById('bar');
+const questionText = document.getElementById('questionText');
+const optionsEl = document.getElementById('options');
+const feedback = document.getElementById('feedback');
+const checkBtn = document.getElementById('checkBtn');
+const nextBtn = document.getElementById('nextBtn');
+const restartBtn = document.getElementById('restartBtn');
+const quizCard = document.getElementById('quizCard');
+const endCard = document.getElementById('endCard');
+const finalScore = document.getElementById('finalScore');
+function renderQuestion() {
+  const q = QUESTIONS[index];
+  progressText.textContent = `Question ${index+1} of ${QUESTIONS.length}`;
+  scoreText.textContent = `Score: ${score} / ${answered}`;
+  bar.style.width = `${(index/QUESTIONS.length)*100}%`;
+  questionText.textContent = q.prompt;
+  optionsEl.innerHTML = '';
+  feedback.className = 'feedback';
+  feedback.innerHTML = '';
+  checkBtn.disabled = false;
+  nextBtn.disabled = true;
+  q.options.forEach(opt => {
+    const label = document.createElement('label');
+    label.className = 'option';
+    label.dataset.option = opt;
+    label.innerHTML = `<input type="checkbox" value="${opt}"><span>${opt}</span>`;
+    label.addEventListener('click', () => setTimeout(() => label.classList.toggle('selected', label.querySelector('input').checked), 0));
+    optionsEl.appendChild(label);
+  });
+}
+function arraysEqual(a,b) {
+  const A=[...a].sort(); const B=[...b].sort();
+  return A.length===B.length && A.every((v,i)=>v===B[i]);
+}
+function checkAnswer() {
+  const q = QUESTIONS[index];
+  const selected = [...optionsEl.querySelectorAll('input:checked')].map(x=>x.value);
+  const correctSet = new Set(q.correctOptions);
+  let correctSelected = 0, wrongSelected = 0, missed = 0;
+  [...optionsEl.children].forEach(label => {
+    const opt = label.dataset.option;
+    const picked = label.querySelector('input').checked;
+    label.querySelector('input').disabled = true;
+    if (correctSet.has(opt) && picked) { label.classList.add('correct'); correctSelected++; }
+    else if (!correctSet.has(opt) && picked) { label.classList.add('wrong'); wrongSelected++; }
+    else if (correctSet.has(opt) && !picked) { label.classList.add('missed'); missed++; }
+  });
+  const perfect = arraysEqual(selected, q.correctOptions);
+  answered++;
+  if (perfect) score++;
+  scoreText.textContent = `Score: ${score} / ${answered}`;
+  const correctList = q.correctOptions.map(x=>`<div class="answerItem">✅ ${x}</div>`).join('');
+  const allList = q.allCorrect.map(x=>`<span class="tag">${x}</span>`).join('');
+  const allText = `Full back-end answer list for typings that resist ${q.attackType} attacks (${q.allCorrectCount} typings)`;
+  feedback.className = `feedback show ${perfect ? 'good' : 'review'}`;
+  feedback.innerHTML = `
+    <h3>${perfect ? '✅ Correct!' : '🧠 Review this one'}</h3>
+    <p><strong>${q.attackType}</strong> attacks are resisted by the correct typings shown in this question, meaning those typings take reduced incoming damage from ${q.attackType} attacks.</p>
+    <p><strong>Your result:</strong> ${correctSelected} correct selected, ${wrongSelected} incorrect selected, ${missed} missed.</p>
+    <div class="answerList">${correctList}</div>
+    <details class="details"><summary>${allText}</summary><div class="allAnswers">${allList}</div></details>
+  `;
+  checkBtn.disabled = true;
+  nextBtn.disabled = false;
+}
+function nextQuestion() {
+  index++;
+  if (index >= QUESTIONS.length) {
+    bar.style.width = '100%';
+    quizCard.style.display = 'none';
+    endCard.classList.add('show');
+    finalScore.innerHTML = `<strong>Final Score:</strong> ${score} / ${answered}`;
+  } else { renderQuestion(); }
+}
+function restartQuiz() {
+  index=0; score=0; answered=0;
+  quizCard.style.display = 'block';
+  endCard.classList.remove('show');
+  renderQuestion();
+}
+checkBtn.addEventListener('click', checkAnswer);
+nextBtn.addEventListener('click', nextQuestion);
+restartBtn.addEventListener('click', restartQuiz);
+renderQuestion();
+</script>
+</body>
+</html>
